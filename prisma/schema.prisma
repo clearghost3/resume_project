@@ -18,6 +18,17 @@ enum Role{
   Manager
 }
 
+enum Gender {
+  Male
+  Female
+}
+
+enum Status {
+  Apply
+  Pass
+  Reject
+}
+
 model Users {
   userId      Int         @id @default(autoincrement()) @map("userId")
   email       String      @map("email")
@@ -26,4 +37,37 @@ model Users {
 
   createdAt   DateTime    @default(now()) @map("createdAt")
   updatedAt   DateTime    @updatedAt  @map("updatedAt")
+
+  Userinfos   Userinfos?
+  Resumes     Resumes[]
+}
+
+model Userinfos {
+  infoId      Int         @id @default(autoincrement()) @map("infoId")
+  UserId      Int         @unique @map("UserId")
+
+  name        String      @map("name")
+  age         Int         @map("age")
+  gender      Gender      @map("gender")
+  profilimage String      @map("profilimage")
+  createdAt   DateTime    @default(now()) @map("createdAt")
+  updatedAt   DateTime    @updatedAt  @map("updatedAt")
+
+  user        Users       @relation(fields:[UserId],references:[userId],onDelete:Cascade)
+
+  @@map("Userinfos")
+}
+
+model Resumes {
+  resumeId          Int         @id @default(autoincrement()) @map("resumeId")
+  UserId            Int         @map("UserId")
+  name              String      @map("name")
+  age               Int        @map("age")
+  content           String      @map("content")
+  status            Status      @map("status")
+  decision_reason   String      @map("decision_reason")
+  manager           String      @map("manager")
+
+  user              Users       @relation(fields:[UserId],references:[userId],onDelete:Cascade)
+
 }
