@@ -75,6 +75,7 @@ model RefreshTokens {
   tokenId     Int       @id @default(autoincrement()) @map("tokenId")
   UserId      Int       @map("UserId")
   token       String    @map("token")
+  secret_key  String    @map("secret_key")
   expiresAt   DateTime  @default(now()) @map("expiresAt")
   createdAt   DateTime  @map("createdAt")
 }

@@ -2,6 +2,7 @@
 import express from "express";
 import { prisma } from "../utils/prisma/index.js";
 import jwt from "jsonwebtoken";
+import bcrypt,{compareSync} from "bcrypt";
 
 //middlewares
 import authMiddleware from "../middlewares/auth.middleware.js";
@@ -35,11 +36,15 @@ router.post('/set-in',async(req,res,next)=>{
 
 
     //정보 기록 section===============
+    //비밀번호 암화
+    const salt=10;
+    const hashed_password=await bcrypt.hash(password,10);
+
 
     //유저 기록
     const user=await prisma.users.create({
         data: {
-            email,password,role
+            email,password:hashed_password,role
         }
     });
     //유저 정보 기록
@@ -71,24 +76,39 @@ router.get("/log-in",async(req,res,next)=>{
     });
     if (!user) return res.json({ErrorMessage:"존재하지 않는 계정입니다."});
 
+    //찾아낸 계정의 비밀번호 비교로 확인
+    if (!(await bcrypt.compare(password,user.password))) return res.status(403).json({ErrorMessage:"비밀번호가 틀립니다!"});
+    
+
+
     //로그인이 성공하였으면, 토큰을 생성
     const Access_token=jwt.sign(user.userId,ACCESS_KEY);
-    res.cookie("Authorization",`Bearer ${Access_token}`,{maxAge:6000});
-    
-    console.log(Access_token);
-
-
+    res.cookie("Authorization",`Bearer ${Access_token}`,{maxAge:1000*60*60});
 
     return res.status(200).json({Message:"성공적으로 로그인되었습니다!"});
 });
 
 
 //본인계정 정보 확인
-router.get('/myinfo',authMiddleware,(req,res,next)=>{
+router.get('/myinfo',authMiddleware,async(req,res,next)=>{
 
     const user=req.user;
-    return res.status(200).json({user});
 
+    const userinfo=await prisma.userinfos.findFirst({
+        where:{
+            UserId:+user.userId
+        },select:{
+            name:true,
+            age:true,
+            gender:true,
+            profilimage:true,
+        }
+    });
+
+
+    const total_info=Object.assign(user,userinfo)
+
+    return res.status(200).json({total_info});
 
     return res.status(200).json({Message:"코드 검증 완료"});
 });

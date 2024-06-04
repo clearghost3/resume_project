@@ -22,6 +22,13 @@ export default async function (req, res, next) {
 
         if (!user) return res.status(404).json({ ErrorMessage: "존재하지 않는 사용자" });
 
+
+        //객체에서 중요한 정보들은 모두 제거
+        delete user.createdAt;
+        delete user.updatedAt;
+        delete user.password;
+        
+        //정보들을 쿠키에 저장
         req.user = user;
 
         if (user.role === "Manager") req.manager = 1;
