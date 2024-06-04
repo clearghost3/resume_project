@@ -4,16 +4,15 @@ import { prisma } from "../utils/prisma/index.js";
 import jwt from "jsonwebtoken";
 
 //middlewares
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 const ACCESS_KEY="First_Key";
-const REFRESH_KEY="Second_Key";
 
 const router=express();
 
 console.log("<===Applyed userRouter===>");
 
 //회원가입
-try {
 router.post('/set-in',async(req,res,next)=>{
 
     //정보를 입력받음
@@ -55,7 +54,7 @@ router.post('/set-in',async(req,res,next)=>{
 });
 
 //로그인
-router.get("/log-in",async(req,res)=>{
+router.get("/log-in",async(req,res,next)=>{
 
     //로그인 정보를 입력받음
     const {email,password}=req.body;
@@ -74,7 +73,7 @@ router.get("/log-in",async(req,res)=>{
 
     //로그인이 성공하였으면, 토큰을 생성
     const Access_token=jwt.sign(user.userId,ACCESS_KEY);
-    res.cookie("Authorization",Access_token,{expiresin:"15m"});
+    res.cookie("Authorization",`Bearer ${Access_token}`,{expiresInt:"15m"});
     
     console.log(Access_token);
 
@@ -85,20 +84,16 @@ router.get("/log-in",async(req,res)=>{
 
 
 //본인계정 정보 확인
-router.get('/myinfo',(req,res)=>{
+router.get('/myinfo',authMiddleware,(req,res,next)=>{
     return res.status(200).json({Message:"코드 검증 완료"});
 });
 
 //본인 계정 정보 수정
-router.patch('/myinfo-edit',(req,res)=>{
+router.patch('/myinfo-edit',(req,res,next)=>{
     return res.status(200).json({Message:"코드 검증 완료"});
 });
 
-//
 
-    }catch(err) {
-        next(err);
-    }
 
 
 export default router;

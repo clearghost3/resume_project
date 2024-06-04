@@ -70,3 +70,11 @@ model Resumes {
 
   user              Users       @relation(fields:[UserId],references:[userId],onDelete:Cascade)
 }
+
+model RefreshTokens {
+  tokenId     Int       @id @default(autoincrement()) @map("tokenId")
+  UserId      Int       @map("UserId")
+  token       String    @map("token")
+  expiresAt   DateTime  @default(now()) @map("expiresAt")
+  createdAt   DateTime  @map("createdAt")
+}
