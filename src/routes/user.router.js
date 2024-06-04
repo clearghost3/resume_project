@@ -73,7 +73,7 @@ router.get("/log-in",async(req,res,next)=>{
 
     //로그인이 성공하였으면, 토큰을 생성
     const Access_token=jwt.sign(user.userId,ACCESS_KEY);
-    res.cookie("Authorization",`Bearer ${Access_token}`,{expiresInt:"15m"});
+    res.cookie("Authorization",`Bearer ${Access_token}`,{maxAge:6000});
     
     console.log(Access_token);
 
@@ -85,6 +85,11 @@ router.get("/log-in",async(req,res,next)=>{
 
 //본인계정 정보 확인
 router.get('/myinfo',authMiddleware,(req,res,next)=>{
+
+    const user=req.user;
+    return res.status(200).json({user});
+
+
     return res.status(200).json({Message:"코드 검증 완료"});
 });
 
