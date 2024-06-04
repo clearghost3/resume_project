@@ -52,14 +52,45 @@ router.get("/resume/my_resumes",authMiddleware,async(req,res,next)=>{
 });
 
 //3.본인 이력서 수정
-router.patch("/resume/:my_resumeid",authMiddleware,async(req,res,next)=>{
+router.patch("/resume/:resumeId",authMiddleware,async(req,res,next)=>{
+    //사용자의 입력정보 수집
+    const {content}=req.body;
+    if (!content) return res.status(403).json({ErrorMessage:"필요한 정보를 입력해주세요"});
+
+    const resumeId=req.params.resumeId;
     const user=req.user;
 
-    return res.status(200).json({Message:"코드 검증 완료"});
+    //정보 검증 section===============
+
+    //접근 권한 확인
+    const resumeaccess=await prisma.resumes.findFirst({
+        where:{
+        
+            UserId:+user.userId,
+            resumeId:+resumeId
+        }
+    });
+
+    if (!resumeaccess) return res.status(403).json({ErrorMessage:"접근할 권한이 없거나 존재하지 않습니다!"});
+    console.log(resumeaccess);
+
+
+    //정보 기록 section===============
+    const resume=prisma.resumes.update({
+        data: {
+            content
+        },
+        where:{
+            resumeId:+resumeId
+        }
+    })
+
+
+    return res.status(200).json({Message:"성공적으로 수정되었습니다!"});
 });
 
 //4.이력서 삭제
-router.delete("/resume/:my_resumeid",authMiddleware,async(req,res,next)=>{
+router.delete("/resume/:resumeId",authMiddleware,async(req,res,next)=>{
     const user=req.user;
 
     return res.status(200).json({Message:"코드 검증 완료"});

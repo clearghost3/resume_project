@@ -30,28 +30,28 @@ enum Status {
 }
 
 model Users {
-  userId      Int         @id @default(autoincrement()) @map("userId")
-  email       String      @unique @map("email")
-  password    String      @map("password")
-  role        Role        @default(General) @map("role")
+  userId            Int         @id @default(autoincrement()) @map("userId")
+  email             String      @unique @map("email")
+  password          String      @map("password")
+  role              Role        @default(General) @map("role")
 
-  createdAt   DateTime    @default(now()) @map("createdAt")
-  updatedAt   DateTime    @updatedAt  @map("updatedAt")
+  createdAt         DateTime    @default(now()) @map("createdAt")
+  updatedAt         DateTime    @updatedAt  @map("updatedAt")
 
-  Userinfos   Userinfos?
-  Resumes     Resumes[]
+  Userinfos         Userinfos?
+  Resumes           Resumes[]
 }
 
 model Userinfos {
-  infoId      Int         @id @default(autoincrement()) @map("infoId")
-  UserId      Int         @unique @map("UserId")
+  infoId            Int         @id @default(autoincrement()) @map("infoId")
+  UserId            Int         @unique @map("UserId")
 
-  name        String      @map("name")
-  age         Int         @map("age")
-  gender      Gender      @map("gender")
-  profilimage String?     @map("profilimage")
-  createdAt   DateTime    @default(now()) @map("createdAt")
-  updatedAt   DateTime    @updatedAt  @map("updatedAt")
+  name              String      @map("name")
+  age               Int         @map("age")
+  gender            Gender      @map("gender")
+  profileimage      String?    @map("profileimage")
+  createdAt         DateTime    @default(now()) @map("createdAt")
+  updatedAt         DateTime    @updatedAt  @map("updatedAt")
 
   user        Users       @relation(fields:[UserId],references:[userId],onDelete:Cascade)
 
@@ -72,10 +72,10 @@ model Resumes {
 }
 
 model RefreshTokens {
-  tokenId     Int       @id @default(autoincrement()) @map("tokenId")
-  UserId      Int       @map("UserId")
-  token       String    @map("token")
-  secret_key  String    @map("secret_key")
-  expiresAt   DateTime  @default(now()) @map("expiresAt")
-  createdAt   DateTime  @map("createdAt")
+  tokenId           Int       @id @default(autoincrement()) @map("tokenId")
+  UserId            Int       @map("UserId")
+  token             String    @map("token")
+  secret_key        String    @map("secret_key")
+  expiresAt         DateTime  @default(now()) @map("expiresAt")
+  createdAt         DateTime  @map("createdAt")
 }
