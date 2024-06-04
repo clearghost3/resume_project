@@ -7,6 +7,7 @@ export default async function (req, res, next) {
         const [tokentype, token] = Authorization.split(" ");
 
         //token타입을 검증
+        console.log(Authorization);
         if (tokentype !== "Bearer") return res.status(403).json({ ErrorMessage: "토큰 타입이 일치하지 않습니다" });
 
         //로그인 한 직후가 아닐 때

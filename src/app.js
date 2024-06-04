@@ -4,9 +4,11 @@ import jwt from "jsonwebtoken";
 
 //routes
 import userRouter from "./routes/user.router.js";
+import resumeRouter from "./routes/resume.router.js";
 
 //middlewares
 import errorhandlerMiddleware from "./middlewares/errorhandler.middleware.js";
+
 
 const app=express();
 app.use(express.json());
@@ -15,10 +17,11 @@ app.use(urlencoded({extendeds:true}));
 const PORT=3019;
 
 
+
 app.use(cookieParser());
 
 
-app.use('',[userRouter]);
+app.use('',[userRouter,resumeRouter]);
 
 app.use(errorhandlerMiddleware);
 

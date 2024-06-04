@@ -62,11 +62,11 @@ model Resumes {
   resumeId          Int         @id @default(autoincrement()) @map("resumeId")
   UserId            Int         @map("UserId")
   name              String      @map("name")
-  age               Int        @map("age")
+  age               Int         @map("age")
   content           String      @map("content")
-  status            Status      @map("status")
-  decision_reason   String      @map("decision_reason")
-  manager           String      @map("manager")
+  status            Status      @default(Apply) @map("status")
+  decision_reason   String?     @map("decision_reason")
+  manager           String?      @map("manager")
 
   user              Users       @relation(fields:[UserId],references:[userId],onDelete:Cascade)
 }
