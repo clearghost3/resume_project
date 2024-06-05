@@ -91,7 +91,28 @@ router.patch("/resume/:resumeId",authMiddleware,async(req,res,next)=>{
 
 //4.이력서 삭제
 router.delete("/resume/:resumeId",authMiddleware,async(req,res,next)=>{
+    const resumeId=req.params.resumeId;
     const user=req.user;
+
+    //정보 검증 section===============
+
+    //접근 권한 확인
+    const resumeaccess=await prisma.resumes.findFirst({
+        where:{
+        
+            UserId:+user.userId,
+            resumeId:+resumeId
+        }
+    });
+
+    if (!resumeaccess) return res.status(403).json({ErrorMessage:"접근할 권한이 없거나 존재하지 않습니다!"});
+    console.log(resumeaccess);
+
+    const resumeDelete=await prisma.resumes.delete({
+        where:{
+            resumeId:+resumeId
+        }
+    })
 
     return res.status(200).json({Message:"코드 검증 완료"});
 });
