@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import express, { urlencoded } from "express";
 import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 //routes
 import userRouter from "./routes/user.router.js";

@@ -17,7 +17,7 @@ console.log("<===Applyed userRouter===>");
 router.post('/set-in',async(req,res,next)=>{
 
     //정보를 입력받음
-    const {email,password,role,name,age,gender,profilimage}=req.body;
+    const {email,password,role,name,age,gender,profileimage}=req.body;
     //필요한 정보가 전부 입력되었는지 확인
     if (!email||!password||!name||!age||!gender) return res.status(403).json({ErrorMessage:"필요한 정보를 전부 입력해주세요!"});
 
@@ -50,7 +50,7 @@ router.post('/set-in',async(req,res,next)=>{
     //유저 정보 기록
     const userinfo=await prisma.userinfos.create({
         data: {
-            UserId:+user.userId,name,age,gender,profilimage
+            UserId:+user.userId,name,age,gender,profileimage
         }
     });
 
@@ -102,7 +102,7 @@ router.get('/myinfo',authMiddleware,async(req,res,next)=>{
             name:true,
             age:true,
             gender:true,
-            profilimage:true,
+            profileimage:true,
         }
     });
 
@@ -115,14 +115,39 @@ router.get('/myinfo',authMiddleware,async(req,res,next)=>{
 //본인 계정 정보 수정
 router.patch('/myinfo-edit',authMiddleware,async(req,res,next)=>{
     //유저 입력 받아오기
-    const {name,age,gender,profilimage}=req.body;
+    let {name,age,gender,profileimage}=req.body;
 
     //쿠키에서 유저 정보 가져오기
     const user=req.user;
 
-    const userinfo=await prisma.userinfos.update({
+
+
+    //원래 정보가져오기
+    const userinfo=await prisma.userinfos.findFirst({
+        where: {
+            UserId:+user.userId
+        },
+        select:{
+            name:true,
+            age:true,
+            gender:true,
+            profileimage:true
+        }
+    });
+
+    //입력되지 않은 정보는 기본값을 유지하도록 설정
+    if (!name)
+        name=userinfo.name;
+    if (!age)
+        age=userinfo.age;
+    if (!gender)
+        gender=userinfo.gender;
+    if (!profileimage)
+        profileimage=userinfo.profileimage;
+
+    const edituserinfo=await prisma.userinfos.update({
         data: {
-            name,age:+age,gender,profilimage
+            name,age:+age,gender,profileimage
         }
         ,where:{
             UserId:+user.userId
