@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import { prisma } from "../utils/prisma/index.js";
 
-console.log("<===Applyed resumeRouter===>");
+console.log("<===   Applyed resumeRouter    ===>");
 
 const router=express.Router();
 
@@ -72,18 +72,17 @@ router.patch("/resume/:resumeId",authMiddleware,async(req,res,next)=>{
     });
 
     if (!resumeaccess) return res.status(403).json({ErrorMessage:"접근할 권한이 없거나 존재하지 않습니다!"});
-    console.log(resumeaccess);
 
 
     //정보 기록 section===============
-    const resume=prisma.resumes.update({
+    const resume=await prisma.resumes.update({
         data: {
             content
         },
         where:{
             resumeId:+resumeId
         }
-    })
+    });
 
 
     return res.status(200).json({Message:"성공적으로 수정되었습니다!"});

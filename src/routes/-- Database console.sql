@@ -1,6 +1,7 @@
 -- Database console
 
--- All DELETE
+
+-- <===DELETE ONLY INFORMATION===>
 
 -- DELETE FROM Resumes;
 -- DELETE FROM Userinfos;
@@ -11,6 +12,8 @@
 -- ALTER TABLE Userinfos AUTO_INCREMENT=1;
 -- ALTER TABLE Users AUTO_INCREMENT=1;
 -- ALTER TABLE RefreshTokens AUTO_INCREMENT=1;
+
+-- <===DELETE ALL TABLE===>
 
 -- DROP TABLE Resumes;
 -- DROP TABLE Userinfos;

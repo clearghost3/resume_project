@@ -6,6 +6,7 @@ import "dotenv/config";
 //routes
 import userRouter from "./routes/user.router.js";
 import resumeRouter from "./routes/resume.router.js";
+import adminRouter from "./routes/admin.router.js";
 
 //middlewares
 import errorhandlerMiddleware from "./middlewares/errorhandler.middleware.js";
@@ -22,7 +23,7 @@ const PORT=3019;
 app.use(cookieParser());
 
 
-app.use('',[userRouter,resumeRouter]);
+app.use('',[userRouter,resumeRouter,adminRouter]);
 
 app.use(errorhandlerMiddleware);
 

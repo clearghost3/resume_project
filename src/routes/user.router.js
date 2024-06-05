@@ -11,7 +11,7 @@ const ACCESS_KEY="First_Key";
 
 const router=express();
 
-console.log("<===Applyed userRouter===>");
+console.log("<===   Applyed userRouter  ===>");
 
 //회원가입
 router.post('/set-in',async(req,res,next)=>{
@@ -54,7 +54,7 @@ router.post('/set-in',async(req,res,next)=>{
         }
     });
 
-
+    if (role==="manager") return res.status(200).json({Message:"관리자 계정으로 성공적으로 회원가입되었습니다!"});
     return res.status(200).json({Message:"성공적으로 회원가입되었습니다!"});
 });
 
@@ -86,6 +86,7 @@ router.get("/log-in",async(req,res,next)=>{
     const Access_token=jwt.sign(user.userId,ACCESS_KEY);
     res.cookie("Authorization",`Bearer ${Access_token}`,{maxAge:1000*60*60});
 
+    if (user.role==="Manager") return res.status(200).json({Message:"관리자 계정으로 성공적으로 로그인되었습니다!"});
     return res.status(200).json({Message:"성공적으로 로그인되었습니다!"});
 });
 
