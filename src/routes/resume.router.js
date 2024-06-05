@@ -114,7 +114,7 @@ router.delete("/resume/:resumeId",authMiddleware,async(req,res,next)=>{
         }
     })
 
-    return res.status(200).json({Message:"코드 검증 완료"});
+    return res.status(200).json({Message:"성공적으로 삭제되었습니다!"});
 });
 
 
