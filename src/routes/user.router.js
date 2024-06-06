@@ -100,14 +100,14 @@ router.get("/log-in", async (req, res, next) => {
     return res.status(403).json({ ErrorMessage: "비밀번호가 틀립니다!" });
 
   //로그인이 성공하였으면, 토큰을 생성 (Accesstoken,RefreshToken)
-  const Accesstoken = jwt.sign(user.userId,process.env.AccessTokenKey);
-  const RefreshToken = jwt.sign(user.userId,process.env.RefreshTokenKey);
+  const Accesstoken = jwt.sign({Id:user.userId},process.env.AccessTokenKey);
+  const RefreshToken = jwt.sign({Id:user.userId},process.env.RefreshTokenKey);
 
   res.cookie("Authorization1", `Bearer ${Accesstoken}`, {
     maxAge: 1000 * 6,
   });
   res.cookie("Authorization2",`Bearer ${RefreshToken}`,{
-    maxAge:1000*60,
+    maxAge:1000*6000,
   });
 
   if (user.role === "Manager")
