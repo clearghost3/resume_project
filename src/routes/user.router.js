@@ -7,13 +7,13 @@ import bcrypt, { compareSync } from "bcrypt";
 //middlewares
 import authMiddleware from "../middlewares/auth.middleware.js";
 
-const ACCESS_KEY = "First_Key";
+
 
 const router = express();
 
 console.log("<===   Applyed userRouter  ===>");
 
-//회원가입
+//1. 회원가입
 router.post("/set-in", async (req, res, next) => {
   //정보를 입력받음
   const { email, password, role, name, age, gender, profileimage } = req.body;
@@ -74,7 +74,7 @@ router.post("/set-in", async (req, res, next) => {
   }
 });
 
-//로그인
+//2.로그인
 router.get("/log-in", async (req, res, next) => {
   //로그인 정보를 입력받음
   const { email, password } = req.body;
@@ -99,10 +99,15 @@ router.get("/log-in", async (req, res, next) => {
   if (!(await bcrypt.compare(password, user.password)))
     return res.status(403).json({ ErrorMessage: "비밀번호가 틀립니다!" });
 
-  //로그인이 성공하였으면, 토큰을 생성
-  const Access_token = jwt.sign(user.userId, ACCESS_KEY);
-  res.cookie("Authorization", `Bearer ${Access_token}`, {
-    maxAge: 1000 * 60 * 60,
+  //로그인이 성공하였으면, 토큰을 생성 (Accesstoken,RefreshToken)
+  const Accesstoken = jwt.sign(user.userId,process.env.AccessTokenKey);
+  const RefreshToken = jwt.sign(user.userId,process.env.RefreshTokenKey);
+
+  res.cookie("Authorization1", `Bearer ${Accesstoken}`, {
+    maxAge: 1000 * 6,
+  });
+  res.cookie("Authorization2",`Bearer ${RefreshToken}`,{
+    maxAge:1000*60,
   });
 
   if (user.role === "Manager")
@@ -110,9 +115,11 @@ router.get("/log-in", async (req, res, next) => {
       .status(200)
       .json({ Message: "관리자 계정으로 성공적으로 로그인되었습니다!" });
   return res.status(200).json({ Message: "성공적으로 로그인되었습니다!" });
+
+
 });
 
-//본인계정 정보 확인
+//3.본인계정 정보 확인
 router.get("/myinfo", authMiddleware, async (req, res, next) => {
   try {
     const user = req.user;
@@ -187,7 +194,7 @@ router.patch("/myinfo-edit", authMiddleware, async (req, res, next) => {
   }
 });
 
-//로그아웃
+//4.로그아웃
 router.get("/log-out", (req, res) => {
   res.clearCookie("Authorization");
   return res.json({ Message: "성공적으로 로그아웃 하셨습니다!" });

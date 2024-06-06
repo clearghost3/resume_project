@@ -2,18 +2,25 @@ import jwt from "jsonwebtoken";
 import { prisma } from '../utils/prisma/index.js'
 
 export default async function (req, res, next) {
+
+    // console.log(process.env.AccessTokenKey);
+    // console.log(process.env.RefreshTokenKey);
+
     try {
-        const { Authorization } = req.cookies;
-        const [tokentype, token] = Authorization.split(" ");
+        const { Authorization1,Authorization2 } = req.cookies;
+        const [tokentype1, token1] = Authorization1.split(" ");
+        const [tokentype2, token2] = Authorization2.split(" ");
 
         //token타입을 검증
-        console.log(Authorization);
-        if (tokentype !== "Bearer") return res.status(403).json({ ErrorMessage: "토큰 타입이 일치하지 않습니다" });
+        if (tokentype1 !== "Bearer") return res.status(403).json({ ErrorMessage: "토큰 타입이 일치하지 않습니다" });
+        if (tokentype2 !== "Bearer") return res.status(403).json({ ErrorMessage: "토큰 타입이 일치하지 않습니다" });
 
-        //로그인 한 직후가 아닐 때
-        const decodedToken = jwt.verify(token, "First_Key");
+        //Access_token확인
+        const AcessToken = jwt.verify(token1,process.env.AccessTokenKey);    //env에 존재하는 secrt key와 비슷한지 분석
+        const RefreshToken = jwt.verify(token2,process.env.RefreshTokenKey);
+        
 
-        const userId = decodedToken;
+        const userId = AcessToken;
 
         const user = await prisma.users.findFirst({
             where: {
@@ -39,7 +46,7 @@ export default async function (req, res, next) {
 
     }
     catch (error) {
-        res.clearCookie('Authorization');
+        res.clearCookie('Authorization1');
         console.log(error.name);
         switch (error.name) {
             case 'TokenExpiredError':
