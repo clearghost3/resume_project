@@ -99,11 +99,12 @@ router.get("/log-in", async (req, res, next) => {
   if (!(await bcrypt.compare(password, user.password)))
     return res.status(403).json({ ErrorMessage: "비밀번호가 틀립니다!" });
 
-  //로그인이 성공하였으면, 토큰을 생성 (Accesstoken,RefreshToken)
-  const Accesstoken = jwt.sign({Id:user.userId},process.env.AccessTokenKey);
-  const RefreshToken = jwt.sign({Id:user.userId},process.env.RefreshTokenKey);
+  //로그인이 성공하였으면, 토큰을 생성 (AccessToken,RefreshToken)
+  const AccessToken = jwt.sign({Id:user.userId},process.env.AccessTokenKey,{expiresIn:'6s'});
+  const RefreshToken = jwt.sign({Id:user.userId},process.env.RefreshTokenKey,{expiresIn:'7h'});
 
-  res.cookie("Authorization1", `Bearer ${Accesstoken}`, {
+  //토큰을 쿠키에 저장
+  res.cookie("Authorization1", `Bearer ${AccessToken}`, {
     maxAge: 1000 * 6,
   });
   res.cookie("Authorization2",`Bearer ${RefreshToken}`,{
